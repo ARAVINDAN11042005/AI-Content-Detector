@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Detector | Detect AI Generated Images & Videos</title>
+    <meta name="description" content="State-of-the-art forensic detection engine for AI generated images and videos. Upload media to reveal synthetic noise patterns, EXIF authenticity, and confidence scores.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b5cf6'><path d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z'/></svg>">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <a href="/" class="brand">
+            <div class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+            </div>
+            <div class="brand-text">AI <span>Content Detector</span></div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/" class="nav-link active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Scan Media
+            </a>
+            <a href="/dashboard" class="nav-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                Dashboard
+            </a>
+            <div class="nav-badge">
+                <span class="dot-live"></span>
+                Engine Ready
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <section class="hero-header">
+            <div class="hero-pill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                Forensic Synthetic Media Classifier
+            </div>
+            <h1 class="hero-title">Detect AI Generated<br>Images & Videos</h1>
+            <p class="hero-subtitle">
+                Inspect camera sensor grain, high-frequency diffusion artifacts, EXIF fingerprints, and frame-by-frame anomalies with instant confidence scores.
+            </p>
+        </section>
+
+        <!-- Upload & Analysis Area -->
+        <div class="upload-card-wrapper">
+            <!-- Dropzone -->
+            <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop file here or click to upload">
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,.mp4,.webm" style="display: none;">
+                
+                <div class="dropzone-icon-box">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+                        <path d="M12 12v9"/>
+                        <path d="m16 16-4-4-4 4"/>
+                    </svg>
+                </div>
+                <h3 class="dropzone-title">Drag & drop your image or video here</h3>
+                <p class="dropzone-sub">or click to browse from your device</p>
+
+                <div class="format-pills">
+                    <span class="format-pill">JPG</span>
+                    <span class="format-pill">PNG</span>
+                    <span class="format-pill">WEBP</span>
+                    <span class="format-pill">MP4</span>
+                    <span class="format-pill">WEBM</span>
+                    <span class="format-pill">Up to 50MB</span>
+                </div>
+            </div>
+
+            <!-- Preview Card -->
+            <div class="preview-container glass-card" id="previewContainer">
+                <div class="preview-media-wrapper" id="previewMediaWrapper">
+                    <img id="imagePreview" alt="Preview Image" style="display: none;">
+                    <video id="videoPreview" controls style="display: none;"></video>
+                    
+                    <!-- Futuristic holographic scanning overlay -->
+                    <div class="scanner-overlay" id="scannerOverlay">
+                        <div class="scanner-beam"></div>
+                        <div class="scanner-status-text">
+                            <div class="spinner"></div>
+                            <span id="scannerStatusText">Scanning image noise & latent structures...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-meta-bar">
+                    <div class="preview-file-info">
+                        <div class="file-type-icon" id="previewTypeIcon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                        <div>
+                            <div class="preview-file-title" id="previewFileName">filename.png</div>
+                            <div class="preview-file-sub" id="previewFileSize">0 KB</div>
+                        </div>
+                    </div>
+
+                    <div class="preview-actions">
+                        <button type="button" class="btn btn-secondary" id="btnChangeFile">
+                            Change File
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnAnalyze">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            Analyze Content
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capability Features -->
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/><path d="M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <h3 class="feature-title">Sensor Grain & Texture</h3>
+                <p class="feature-desc">Physical camera sensors produce natural Poisson noise. We detect plastic skin, over-smoothing, and diffusion micro-texture anomalies.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                </div>
+                <h3 class="feature-title">Multi-Frame Video Scan</h3>
+                <p class="feature-desc">Videos are deconstructed frame-by-frame via OpenCV to spot temporal incoherence, morphing artifacts, and frame score distributions.</p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h3 class="feature-title">EXIF & Prompt Signatures</h3>
+                <p class="feature-desc">Detects missing camera hardware profiles or hidden generator headers embedded by Stable Diffusion, Midjourney, and ComfyUI.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>AI Content Detector &bull; Enterprise-grade forensic verification engine</p>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
