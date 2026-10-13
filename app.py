@@ -21,7 +21,17 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'ai-content-detector-secret-key-2026')
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+
+# On Vercel the filesystem is read-only; only /tmp is writable
+IS_VERCEL = os.environ.get('VERCEL') == '1' or os.environ.get('AWS_LAMBDA_FUNCTION_NAME') is not None
+
+if IS_VERCEL:
+    UPLOAD_FOLDER = '/tmp/uploads'
+    db_path = '/tmp/ai_detector.db'
+else:
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+    db_path = os.path.join(BASE_DIR, 'ai_detector.db')
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_FOLDER, 'frames'), exist_ok=True)
 
@@ -29,7 +39,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50 MB max upload limit
 
 # SQLite Database Setup
-db_path = os.path.join(BASE_DIR, 'ai_detector.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
